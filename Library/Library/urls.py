@@ -15,12 +15,30 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.conf.urls.static import static
+from django.conf import settings
 from django.views.generic import RedirectView
+from catalog import views
+from django.conf.urls import url
+from django.contrib.auth import views as auth_views
+
+
+
 
 
 urlpatterns = [
 
     path('admin/', admin.site.urls),
-    path('catalog/',include('catalog.urls')),
-    path('', RedirectView.as_view(url='/catalog/')),
-]
+    path('catalog/', include('catalog.urls')),
+    path('signup/', views.signup, name='signup'),
+    url('login/',auth_views.login, name='login'),
+    path('signup/', views.signup, name='signup'),
+
+    path('login', auth_views.login, name='login'),
+    path('signup', views.signup, name='signup'),
+    path('logout',auth_views.logout,{'next_page':'login'},name='logout'),
+    url(r'^signup/$',views.signup, name='signup'),
+
+  
+    path('', RedirectView.as_view(url='/login/')),
+] +static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
